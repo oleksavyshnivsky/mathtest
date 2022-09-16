@@ -241,9 +241,11 @@ function endMathTest() {
 	var PASSED = points / maxpoints >= テスト.requiredscore
 	DIVS_SCORE.forEach(el => el.classList.add(PASSED ? 'bg-success' : 'bg-danger'))
 
-	BTN_END.closest('div').style.display = 'none'
+	BTN_END.closest('div').style.visibility = 'hidden'
 	BLOCK_RESULT.style.display = ''
 	TIME_PRO.classList.remove('progress-bar-striped', 'progress-bar-animated')
+
+	BLOCK_RESULT.scrollIntoView()
 }
 
 // ————————————————————————————————————————————————————————————————————————————————
@@ -265,7 +267,7 @@ function resetMathTest() {
 	TIME_TXT.classList.remove('bg-warning', 'bg-danger')
 	TIME_PRO.classList.remove('bg-warning', 'bg-danger')
 	BLOCK_QUESTIONS.innerHTML = ''
-	BTN_END.closest('div').style.display = ''
+	BTN_END.closest('div').style.visibility = 'visible'
 	BLOCK_RESULT.style.display = 'none'
 }
 
