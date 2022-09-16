@@ -191,8 +191,6 @@ function startMathTest(){
 // Кінець тесту
 // ————————————————————————————————————————————————————————————————————————————————
 function endMathTest() {
-	if (!confirm('Ви дійсно бажаєте закінчити тест?')) return false
-
 	// Скидаємо таймер
 	if (timer_id) {
 		clearInterval(timer_id)
@@ -277,7 +275,10 @@ function resetMathTest() {
 BLOCK_MATHTEST.style.display = 'none'
 BLOCK_RESULT.style.display = 'none'
 document.getElementById('btn-start').onclick = startMathTest
-document.getElementById('btn-end').onclick = endMathTest
+document.getElementById('btn-end').onclick = e => {
+	if (!confirm('Ви дійсно бажаєте закінчити тест?')) return false
+	endMathTest()
+}
 document.querySelectorAll('[data-reset]').forEach(el => el.onclick = resetMathTest)
 
 document.getElementById('timeout-mins').value = Math.floor(テスト.time / 60)
