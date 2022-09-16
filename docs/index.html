@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Тест</title>
+
+	<!-- CSS only -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css" integrity="sha384-bYdxxUwYipFNohQlHt0bjN/LCpueqWz13HufFEV1SUatKs1cm4L6fFgCi1jT643X" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+	<div class="container">
+		<!-- Шапка -->
+		<h1 class="text-center">Тест</h1>
+		<div class="p-2 text-center" id="start-wrapper">
+			<details class="mb-2">
+				<summary>Питання</summary>
+				<textarea rows="10" id="input-questions" class="form-control"></textarea>
+				<div class="alert alert-warning">Зміни у цьому полі не зберігаються! Після виходу/перезавантаження сторінки вони будуть забуті.</div>
+			</details>
+			<div class="d-flex flex-wrap justify-content-center mb-2">
+				<div class="me-2"><div class="input-group">
+					<label class="input-group-text" for="requiredscore">Ціль</label>
+					<input type="number" id="requiredscore" class="form-control text-center" min="0" max="100">
+					<label class="input-group-text" for="requiredscore">%</label>
+				</div></div>
+				<label class="input-group-text">Відведений час</label>
+				<div><div class="input-group">
+					<label class="input-group-text" for="timeout-mins">Хвилини</label>
+					<input type="number" id="timeout-mins" class="form-control text-center" min="0" max="59">
+				</div></div>
+				<div><div class="input-group">
+					<label class="input-group-text" for="timeout-secs">Секунди</label>
+					<input type="number" id="timeout-secs" class="form-control text-center" min="0" max="59">
+				</div></div>
+			</div>
+			<!-- Розпочати -->
+			<div class="mb-2">
+				<button id="btn-start" class="btn btn-primary">Розпочати</button>
+			</div>
+		</div>
+
+		<!-- Тіло тесту -->
+		<div class="p-2" id="mathtest-wrapper">
+			<!-- Таймер -->
+			<div class="d-flex flex-wrap justify-content-between mb-2">
+				<div class="bg-info text-center p-2" id="remainingtime-text">
+					
+				</div>
+				<div class="p-2" style="min-width: 50%;">
+					<div class="progress">
+						<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%" id="remainingtime-progress"></div>
+					</div>
+				</div>
+			</div>
+			<!-- Питання -->
+			<div id="questions-wrapper"></div>
+			<!-- Кнопка завершення -->
+			<div class="d-flex flex-wrap justify-content-between p-2">
+				<button class="btn btn-secondary" data-reset>Скинути</button>
+				<button id="btn-end" class="btn btn-primary">Закінчити</button>
+			</div>
+		</div>
+		
+		<!-- Результати -->
+		<div class="p-2 table-responsive" id="result-wrapper">
+			<table class="table table-sm table-hover text-end">
+				<thead>
+					<tr>
+						<th></th>
+						<th>Результат</th>
+						<th>Потрібно</th>
+						<th>Максимум</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th class="text-start">Частка</th>
+						<td id="score-fraction"></td>
+						<td id="requiredscore-fraction"></td>
+						<td>1</td>
+					</tr>
+					<tr>
+						<th class="text-start">Очки</th>
+						<td id="score-points"></td>
+						<td id="requiredscore-points"></td>
+						<td id="maxscore-points"></td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="text-center p-2">
+				<button class="btn btn-primary" data-reset>Скинути</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Шаблони для показу питань -->
+	<template id="tpl-question">
+		<div class="card mb-2">
+			<div class="card-header d-flex flex-wrap justify-content-between">
+				<div data-n></div>
+				<div class="" data-points></div>
+			</div>
+			<div class="card-header" data-question></div>
+			<div class="card-body" data-answer></div>
+		</div>
+	</template>
+
+	<template id="tpl-answerfield-num">
+		<input type="number" class="form-control">
+	</template>
+
+	<template id="tpl-answerfield-opt">
+		<div class="form-check">
+			<input class="form-check-input" type="radio" >
+			<label class="form-check-label"></label>
+		</div>
+	</template>
+
+	<template id="tpl-answerfield-str">
+		<input type="text" class="form-control">
+	</template>
+
+	<template id="tpl-answerfield-txt">
+		<textarea rows="2" class="form-control"></textarea>
+	</template>
+
+	<!-- JavaScript Bundle with Popper -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.js" integrity="sha384-Qsn9KnoKISj6dI8g7p1HBlNpVx0I8p1SvlwOldgi3IorMle61nQy4zEahWYtljaz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+	<script src="main.js"></script>
+</body>
+</html>
